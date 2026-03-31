@@ -30,6 +30,13 @@ public:
     static Tensor random(const vector<size_t>& shape, double min, double max);
     static Tensor arrange(int start, int end);
 
+    friend Tensor operator+(const Tensor &a, const Tensor &b);
+    friend Tensor operator-(const Tensor &a, const Tensor &b);
+    friend Tensor operator*(const Tensor &a, const Tensor &b);
+    friend Tensor operator*(const Tensor &a, double &b);
+
+    Tensor view(const vector<size_t>& shape);
+    Tensor unsqueeze(const int num);
     Tensor apply(const TensorTransform& transform) const;
 };
 

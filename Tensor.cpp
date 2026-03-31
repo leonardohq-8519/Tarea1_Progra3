@@ -13,6 +13,52 @@ double rand_num(double min, double max) {
     return dis(gen);
 }
 
+Tensor operator+(const Tensor &a, const Tensor &b) {
+    if (a.coords != b.coords)
+        throw invalid_argument("Las dimensiones no son compatibles.");
+
+    int uni = abs(*a.coords % 10);
+    vector<size_t> vec;
+    for (int i=0; i<uni; i++)
+        vec.push_back(a.coords[i]);
+    Tensor resultado = Tensor::zeros(vec);
+    resultado.coords = a.coords + b.coords;
+    return resultado;
+}
+Tensor operator-(const Tensor &a, const Tensor &b) {
+    if (a.coords != b.coords)
+        throw invalid_argument("Las dimensiones no son compatibles.");
+
+    int uni = abs(*a.coords % 10);
+    vector<size_t> vec;
+    for (int i=0; i<uni; i++)
+        vec.push_back(a.coords[i]);
+    Tensor resultado = Tensor::zeros(vec);
+    resultado.coords = a.coords - b.coords;
+    return resultado;
+}
+Tensor operator*(const Tensor &a, const Tensor &b) {
+    if (a.coords != b.coords)
+        throw invalid_argument("Las dimensiones no son compatibles.");
+
+    int uni = abs(*a.coords % 10);
+    vector<size_t> vec;
+    for (int i=0; i<uni; i++)
+        vec.push_back(a.coords[i]);
+    Tensor resultado = Tensor::zeros(vec);
+    resultado.coords = a.coords * b.coords;
+    return resultado;
+}
+Tensor operator*(const Tensor &a, double &b) {
+    int uni = abs(*a.coords % 10);
+    vector<size_t> vec;
+    for (int i=0; i<uni; i++)
+        vec.push_back(a.coords[i]);
+    Tensor resultado = Tensor::zeros(vec);
+    resultado.coords = a.coords * b;
+    return resultado;
+}
+
 Tensor::~Tensor() {
     delete[] tensor;
     delete[] coords;
