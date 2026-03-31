@@ -15,15 +15,17 @@ double rand_num(double min, double max) {
 
 Tensor::~Tensor() {
     delete[] tensor;
+    delete[] coords;
 }
 
 Tensor::Tensor(const vector<size_t> &shape, const vector<double> &values) {
     //MAX 3D
-    size_t size = values.size();
+    size = values.size();
+    c_size = shape.size();
     tensor = new double[size];
-    coords = new int[shape.size()];
+    coords = new int[c_size];
 
-    if (shape.size() > 3 || shape.size() < 1) {
+    if (c_size > 3 || c_size < 1) {
         throw invalid_argument("Invalid shape");
     }
 
@@ -31,7 +33,7 @@ Tensor::Tensor(const vector<size_t> &shape, const vector<double> &values) {
         tensor[i] = values[i];
     }
 
-    for (int i = 0; i < shape.size(); i++) {
+    for (int i = 0; i < c_size; i++) {
         coords[i] = shape[i];
     }
 }
@@ -41,10 +43,7 @@ Tensor Tensor::zeros(const vector<size_t> &shape) {
     for (int i = 0; i < shape.size(); i++) {
         size *= shape[i];
     }
-    vector<double> values(size);
-    for (int i = 0; i < size; i++) {
-        values[i] = 0;
-    }
+    vector<double> values(size,0);
     return Tensor(shape,values);
 }
 
@@ -53,10 +52,7 @@ Tensor Tensor::ones(const vector<size_t> &shape) {
     for (int i = 0; i < shape.size(); i++) {
         size *= shape[i];
     }
-    vector<double> values(size);
-    for (int i = 0; i < size; i++) {
-        values[i] = 1;
-    }
+    vector<double> values(size,1.0);
     return Tensor(shape,values);
 }
 
@@ -73,5 +69,71 @@ Tensor Tensor::random(const vector<size_t> &shape, double min, double max) {
 }
 
 Tensor Tensor::arrange(int start, int end) {
-
+    size_t size = end - start;
+    vector<double> values(size);
+    for (int i = 0; i < size; i++) {
+        values[i] = start+i;
+    }
+    return Tensor({size}, values);
 }
+
+Tensor::Tensor(const Tensor &other) {
+    tensor = new double[other.size];
+    coords = new int[other.c_size];
+
+    //Deep Copy
+    for (int i = 0; i < other.c_size; i++) {
+        coords[i] = other.coords[i];
+    }
+    for (int i = 0; i < other.size; i++) {
+        tensor[i] = other.tensor[i];
+    }
+    size = other.size;
+    c_size = other.c_size;
+}
+
+Tensor &Tensor::operator=(const Tensor &other) {
+    if (this != &other) {
+        delete[] tensor;
+        delete[] coords;
+        tensor = new double[other.size];
+        coords = new int[other.c_size];
+        for (int i = 0; i < other.c_size; i++) {
+            coords[i] = other.coords[i];
+        }
+        for (int i = 0; i < other.size; i++) {
+            tensor[i] = other.tensor[i];
+        }
+        size = other.size;
+        c_size = other.c_size;
+
+    }
+    return *this;
+}
+
+Tensor::Tensor(Tensor &&other) noexcept : tensor(other.tensor), coords(other.coords),size(other.size), c_size(other.c_size) {
+    other.tensor = nullptr;
+    other.coords = nullptr;
+    other.size = 0;
+    other.c_size = 0;
+}
+
+Tensor &Tensor::operator=(Tensor &&other) noexcept {
+    if (this != &other) {
+        delete[] tensor;
+        delete[] coords;
+        tensor = other.tensor;
+        coords = other.coords;
+        size = other.size;
+        c_size = other.c_size;
+
+        other.coords = nullptr;
+        other.tensor = nullptr;
+        other.size = 0;
+        other.c_size = 0;
+    }
+    return *this;
+}
+
+
+

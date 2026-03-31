@@ -10,6 +10,8 @@ using namespace std;
 class Tensor {
     double* tensor;
     int* coords;
+    size_t size;
+    size_t c_size;
 public:
     Tensor(const vector<size_t>& shape, const vector<double>& values);
     Tensor(const Tensor& other);
