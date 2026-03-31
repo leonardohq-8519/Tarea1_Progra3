@@ -5,14 +5,20 @@
 #ifndef TAREA1_P3_TENSOR_H
 #define TAREA1_P3_TENSOR_H
 #include <vector>
+#include "TensorTransform.h"
 using namespace std;
+
+class TensorTransform;
 
 class Tensor {
     double* tensor;
-    int* coords;
+    size_t* coords;
     size_t size;
     size_t c_size;
 public:
+    friend class TensorTransform;
+    friend class relu;
+    friend class sigmoid;
     Tensor(const vector<size_t>& shape, const vector<double>& values);
     Tensor(const Tensor& other);
     Tensor(Tensor&& other) noexcept;
@@ -24,6 +30,7 @@ public:
     static Tensor random(const vector<size_t>& shape, double min, double max);
     static Tensor arrange(int start, int end);
 
+    Tensor apply(const TensorTransform& transform) const;
 };
 
 

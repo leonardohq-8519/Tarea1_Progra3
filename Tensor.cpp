@@ -23,7 +23,7 @@ Tensor::Tensor(const vector<size_t> &shape, const vector<double> &values) {
     size = values.size();
     c_size = shape.size();
     tensor = new double[size];
-    coords = new int[c_size];
+    coords = new size_t[c_size];
 
     if (c_size > 3 || c_size < 1) {
         throw invalid_argument("Invalid shape");
@@ -79,7 +79,7 @@ Tensor Tensor::arrange(int start, int end) {
 
 Tensor::Tensor(const Tensor &other) {
     tensor = new double[other.size];
-    coords = new int[other.c_size];
+    coords = new size_t[other.c_size];
 
     //Deep Copy
     for (int i = 0; i < other.c_size; i++) {
@@ -97,7 +97,7 @@ Tensor &Tensor::operator=(const Tensor &other) {
         delete[] tensor;
         delete[] coords;
         tensor = new double[other.size];
-        coords = new int[other.c_size];
+        coords = new size_t[other.c_size];
         for (int i = 0; i < other.c_size; i++) {
             coords[i] = other.coords[i];
         }
@@ -133,6 +133,10 @@ Tensor &Tensor::operator=(Tensor &&other) noexcept {
         other.c_size = 0;
     }
     return *this;
+}
+
+Tensor Tensor::apply(const TensorTransform &transform) const {
+    return transform.apply(*this);
 }
 
 

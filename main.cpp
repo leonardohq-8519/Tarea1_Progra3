@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Tensor.h"
+#include "TensorTransform.h"
 
 using namespace std;
 
@@ -12,4 +13,6 @@ int main() {
     Tensor tensor5 = tensor1;
     Tensor tensor6(tensor2);
     Tensor tensor7(move(tensor3));
+    relu ReLU;
+    Tensor tensor8 = tensor4.apply(ReLU);
 }

@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_executable(Tarea1_P3 main.cpp
         Tensor.cpp
-        Tensor.h)
+        Tensor.h
+        TensorTransform.cpp
+        TensorTransform.h)
