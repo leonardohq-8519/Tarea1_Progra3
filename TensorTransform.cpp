@@ -1,7 +1,3 @@
-//
-// Created by leona on 30/03/2026.
-//
-
 #include "TensorTransform.h"
 #include <cmath>
 

@@ -2,9 +2,7 @@
 #include "Tensor.h"
 #include "TensorTransform.h"
 
-
 using namespace std;
-
 
 int main() {
    Tensor tensor1({2, 2}, {1, 2, 3, 4});
@@ -38,6 +36,38 @@ int main() {
    Tensor tensor17 = Tensor::ones({2, 3});
    Tensor tensor18 = Tensor::zeros({2, 3});
    Tensor tensor19 = Tensor::concat({tensor17, tensor18}, 0);
-  
+
+
+
+   // Ejecución de la parte 10
+   // 1. Crear un tensor de entrada de dimensiones 1000 × 20 × 20.
+   Tensor A = Tensor::zeros({1000, 20, 20});
+
+   // 2. Transformarlo a 1000 × 400 usando view.
+   A.view({1000, 400});
+
+   // 3. Multiplicarlo por una matriz 400 × 100.
+   Tensor B = Tensor::zeros({400, 100});
+   matmul(A, B);
+
+   // 4. Sumar una matriz 1 × 100.
+   Tensor C = Tensor::zeros({1, 100});
+   Tensor D = A + C;
+
+   // 5. Aplicar la funci´on ReLU.
+   relu ReLU2;
+   Tensor E = D.apply(ReLU2);
+
+   // 6. Multiplicar por una matriz 100 × 10.
+   Tensor F = Tensor::zeros({100, 10});
+   matmul(E, F);
+
+   // 7. Sumar una matriz 1 × 10.
+   Tensor G = Tensor::zeros({1, 100});
+   Tensor H = E + G;
+
+   // 8. Aplicar la funci´on Sigmoid.
+   sigmoid Sigmoid;
+   Tensor I = H.apply(Sigmoid);
    return 0;
 }

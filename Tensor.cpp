@@ -2,7 +2,6 @@
 #include <random>
 #include <stdexcept>
 
-
 double rand_num(double min, double max) {
    random_device rd;
    mt19937 gen(rd());
@@ -212,4 +211,21 @@ Tensor operator*(const Tensor &a, double b) {
        r[j] = a.tensor[j] * b;
    Tensor resultado(vec, r);
    return resultado;
+}
+
+Tensor Tensor::concat(vector<Tensor> tensores, int axis) {
+    if (a.coords != b.coords)
+        throw invalid_argument("Las dimensiones no son compatibles.");
+
+}
+
+Tensor dot ( const Tensor & a , const Tensor & b ) {
+    if (a.coords != b.coords)
+        throw invalid_argument("Las dimensiones no son compatibles.");
+}
+
+Tensor matmul ( const Tensor & a , const Tensor & b ) {
+    if (a.coords != b.coords)
+        throw invalid_argument("Las dimensiones no son compatibles.");
+
 }

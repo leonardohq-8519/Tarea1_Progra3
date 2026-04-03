@@ -1,7 +1,3 @@
-//
-// Created by leona on 30/03/2026.
-//
-
 #ifndef TAREA1_P3_TENSORTRANSFORM_H
 #define TAREA1_P3_TENSORTRANSFORM_H
 #include "Tensor.h"
