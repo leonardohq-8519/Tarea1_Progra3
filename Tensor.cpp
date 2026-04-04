@@ -267,13 +267,52 @@ Tensor Tensor::concat(vector<Tensor> tensors, size_t axis) {
 }
 
 Tensor dot ( const Tensor & a , const Tensor & b ) {
-    if (a.coords != b.coords)
+    if (a.c_size != b.c_size)
         throw invalid_argument("Las dimensiones no son compatibles.");
+    size_t total_elements = 1;
+    for (size_t i = 0; i < a.c_size; i++) {
+        total_elements *= a.coords[i];
+    }
+
+    double sum = 0;
+    for (size_t i = 0; i < total_elements; i++) {
+        sum += a.tensor[i] * b.tensor[i];
+    }
+
+    Tensor result({1},{sum});
+    return move(result);
 }
 
 Tensor matmul ( const Tensor & a , const Tensor & b ) {
-    if (a.coords != b.coords)
+    if (a.c_size != 2 || b.c_size != 2)
+        throw invalid_argument("Solo se soporta tensores 2D.");
+
+    size_t M = a.coords[0];
+    size_t K_A = a.coords[1];
+    size_t K_B = b.coords[0];
+    size_t N = b.coords[1];
+
+    if (K_A != K_B) {
         throw invalid_argument("Las dimensiones no son compatibles.");
+    }
+
+    vector<size_t> result = {M,N};
+    vector<double> result_values(M*N,0.0);
+
+    for (size_t i = 0; i < M; i++) {
+        for (size_t j = 0; j < N; j++) {
+            double sum = 0.0;
+            for (size_t k = 0; k < K_A; k++) {
+                size_t index_A = i*K_A + k;
+                size_t index_B = k*N + j;
+
+                sum += a.tensor[index_A] * b.tensor[index_B];
+            }
+            result_values[i*N + j] = sum;
+        }
+    }
+    Tensor result_tensor(result,result_values);
+    return move(result_tensor);
 
 }
 
