@@ -360,3 +360,74 @@ void Tensor::print() const {
         throw invalid_argument("Invalid size");
     }
 }
+
+
+
+Tensor Tensor::view(const vector<size_t> &shape) {
+   // calcular tamaño nuevo
+   size_t new_size = 1;
+   for (size_t i = 0; i < shape.size(); i++) {
+       new_size *= shape[i];
+   }
+
+
+   if (new_size != size) {
+       throw invalid_argument("Tamaño inválido");
+   }
+
+
+   // crear nuevo tensor (copia de datos)
+   Tensor resultado = *this; // usa copy constructor
+
+
+   // liberar coords antiguos del result
+   delete[] resultado.coords;
+
+
+   // asignar nuevo shape
+   resultado.c_size = shape.size();
+   resultado.coords = new size_t[resultado.c_size];
+
+
+   for (size_t i = 0; i < resultado.c_size; i++) {
+       resultado.coords[i] = shape[i];
+   }
+
+
+   return resultado;
+}
+
+
+
+
+Tensor Tensor::unsqueeze(size_t num) {
+   if (c_size >= 3) {
+       throw invalid_argument("Máximo 3 dimensiones");
+   }
+
+
+   if (num > c_size) {
+       throw invalid_argument("Dimensión errónea/inexistente");
+   }
+
+
+   Tensor resultado = *this;
+
+
+   delete[] resultado.coords;
+
+
+   resultado.c_size = c_size + 1;
+   resultado.coords = new size_t[resultado.c_size];
+
+
+   // insertar dimensión
+   for (size_t i = 0, j = 0; i < resultado.c_size; i++) {
+       if (i == num) {
+           resultado.coords[i] = 1;
+       } else {
+           resultado.coords[i] = coords[j++];
+       }
+   }
+   return resultado;
+}

@@ -40,10 +40,14 @@ public:
 
     static Tensor concat(vector<Tensor> tensors, size_t axis);
     Tensor view(const vector<size_t>& shape);
-    //Tensor unsqueeze(const int num);
+    Tensor unsqueeze(size_t num);
     Tensor apply(const TensorTransform& transform) const;
 
     void print() const;
+
+    size_t& getShape(){
+        return *coords;
+    }
 };
 
 

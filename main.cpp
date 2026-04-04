@@ -70,4 +70,12 @@ int main() {
    sigmoid Sigmoid;
    Tensor I = H.apply(Sigmoid);
    return 0;
+
+   
+   // Para corroborar el tamaño final
+   auto shape = I.getShape();
+
+   cout << "Tamaño final: ";
+   cout << shape << endl;
+   return 0;
 }
