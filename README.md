@@ -1,6 +1,7 @@
 # Desarrollo de una librería de tensores en C++
 ### Autores ✒️
 Leonardo Julian Huanay Quiroz
+
 Emily Alessandra Chacón Ttito
 
 ## Descripción de la tarea 🎯
