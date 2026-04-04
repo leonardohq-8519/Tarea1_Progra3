@@ -155,62 +155,76 @@ Tensor Tensor::apply(const TensorTransform &transform) const {
 
 
 Tensor operator+(const Tensor &a, const Tensor &b) {
-   if (a.coords != b.coords)
+    if (a.c_size!= b.c_size)
        throw invalid_argument("Las dimensiones no son compatibles.");
+    for (size_t i = 0; i < a.c_size; i++){
+        if (a.coords[i]!=b.coords[i]){
+            throw invalid_argument("Las dimensiones no son compatibles.");
+        }
+    }
+
    vector<size_t> vec;
-   for (int i = 0; i < a.c_size; i++)
+   for (size_t i = 0; i < a.c_size; i++)
        vec.push_back(a.coords[i]);
-   vector<double> r;
-   for (int j = 0; j < b.size; j++)
+
+   vector<double> r(a.size);
+   for (size_t j = 0; j < a.size; j++)
        r[j] = a.tensor[j] + b.tensor[j];
-   Tensor resultado(vec, r);
-   return resultado;
+   return Tensor (vec, r);
 }
 
 
 
 
 Tensor operator-(const Tensor &a, const Tensor &b) {
-   if (a.coords != b.coords)
+    if (a.c_size!= b.c_size)
        throw invalid_argument("Las dimensiones no son compatibles.");
-
+    for (size_t i = 0; i < a.c_size; i++){
+        if (a.coords[i]!=b.coords[i]){
+            throw invalid_argument("Las dimensiones no son compatibles.");
+        }
+    }
 
    vector<size_t> vec;
-   for (int i = 0; i < a.c_size; i++)
+   for (size_t i = 0; i < a.c_size; i++)
        vec.push_back(a.coords[i]);
-   vector<double> r;
-   for (int j = 0; j < b.size; j++)
+
+   vector<double> r(a.size);
+   for (size_t j = 0; j < a.size; j++)
        r[j] = a.tensor[j] - b.tensor[j];
-   Tensor resultado(vec, r);
-   return resultado;
+   return Tensor (vec, r);
 }
 
 
 Tensor operator*(const Tensor &a, const Tensor &b) {
-   if (a.coords != b.coords)
+    if (a.c_size!= b.c_size)
        throw invalid_argument("Las dimensiones no son compatibles.");
-
+    for (size_t i = 0; i < a.c_size; i++){
+        if (a.coords[i]!=b.coords[i]){
+            throw invalid_argument("Las dimensiones no son compatibles.");
+        }
+    }
 
    vector<size_t> vec;
-   for (int i = 0; i < a.c_size; i++)
+   for (size_t i = 0; i < a.c_size; i++)
        vec.push_back(a.coords[i]);
-   vector<double> r;
-   for (int j = 0; j < b.size; j++)
+
+   vector<double> r(a.size);
+   for (size_t j = 0; j < a.size; j++)
        r[j] = a.tensor[j] * b.tensor[j];
-   Tensor resultado(vec, r);
-   return resultado;
+   return Tensor (vec, r);
 }
 
 
 Tensor operator*(const Tensor &a, double b) {
    vector<size_t> vec;
-   for (int i = 0; i < a.c_size; i++)
+   for (size_t i = 0; i < a.c_size; i++)
        vec.push_back(a.coords[i]);
-   vector<double> r;
-   for (int j = 0; j < a.size; j++)
+
+   vector<double> r(a.size);
+   for (size_t j = 0; j < a.size; j++)
        r[j] = a.tensor[j] * b;
-   Tensor resultado(vec, r);
-   return resultado;
+   return Tensor (vec, r);
 }
 
 Tensor Tensor::concat(vector<Tensor> tensors, size_t axis) {
