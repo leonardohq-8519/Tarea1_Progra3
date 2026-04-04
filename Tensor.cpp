@@ -17,7 +17,6 @@ Tensor::~Tensor() {
 
 
 Tensor::Tensor(const vector<size_t> &shape, const vector<double> &values) {
-   //MAX 3D
    size = values.size();
    c_size = shape.size();
    tensor = new double[size];
@@ -378,7 +377,6 @@ void Tensor::print() const {
 
 
 Tensor Tensor::view(const vector<size_t> &shape) {
-   // calcular tamaño nuevo
    size_t new_size = 1;
    for (size_t i = 0; i < shape.size(); i++) {
        new_size *= shape[i];
@@ -390,15 +388,12 @@ Tensor Tensor::view(const vector<size_t> &shape) {
    }
 
 
-   // crear nuevo tensor (copia de datos)
-   Tensor resultado = *this; // usa copy constructor
+   Tensor resultado = *this;
 
 
-   // liberar coords antiguos del result
    delete[] resultado.coords;
 
 
-   // asignar nuevo shape
    resultado.c_size = shape.size();
    resultado.coords = new size_t[resultado.c_size];
 
@@ -406,7 +401,6 @@ Tensor Tensor::view(const vector<size_t> &shape) {
    for (size_t i = 0; i < resultado.c_size; i++) {
        resultado.coords[i] = shape[i];
    }
-
 
    return resultado;
 }
@@ -435,7 +429,6 @@ Tensor Tensor::unsqueeze(size_t num) {
    resultado.coords = new size_t[resultado.c_size];
 
 
-   // insertar dimensión
    for (size_t i = 0, j = 0; i < resultado.c_size; i++) {
        if (i == num) {
            resultado.coords[i] = 1;
