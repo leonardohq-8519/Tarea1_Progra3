@@ -45,8 +45,8 @@ public:
 
     void print() const;
 
-    size_t& getShape(){
-        return *coords;
+    size_t* getShape(){
+        return coords;
     }
 };
 

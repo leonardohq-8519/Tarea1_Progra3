@@ -154,10 +154,34 @@ Tensor Tensor::apply(const TensorTransform &transform) const {
 
 
 Tensor operator+(const Tensor &a, const Tensor &b) {
+    bool isBroadcasting = false;
+    for (size_t i = 0; i < b.c_size; i++) {
+        if (i+1 == b.c_size && b.coords[i] == a.coords[a.c_size-1]) {
+            isBroadcasting = true;
+        }
+        else if (b.coords[i] != 1) {
+            break;
+        }
+    }
+
+    if (isBroadcasting) {
+        size_t last_dim = a.c_size - 1;
+        vector<size_t> vec;
+        for (size_t i = 0; i < a.c_size; i++)
+            vec.push_back(a.coords[i]);
+        vector<double> r(a.size);
+        for (size_t i = 0; i < a.size; i++) {
+            size_t index = i%last_dim;
+            r[i] = a.tensor[i] + b.tensor[index];
+        }
+        return Tensor(vec, r);
+    }
+
+
     if (a.c_size!= b.c_size)
        throw invalid_argument("Las dimensiones no son compatibles.");
     for (size_t i = 0; i < a.c_size; i++){
-        if (a.coords[i]!=b.coords[i]){
+        if (a.coords[i]!=b.coords[i]) {
             throw invalid_argument("Las dimensiones no son compatibles.");
         }
     }

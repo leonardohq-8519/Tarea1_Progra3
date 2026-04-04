@@ -44,15 +44,15 @@ int main() {
    Tensor A = Tensor::zeros({1000, 20, 20});
 
    // 2. Transformarlo a 1000 × 400 usando view.
-   A.view({1000, 400});
+   Tensor A_view = A.view({1000, 400});
 
    // 3. Multiplicarlo por una matriz 400 × 100.
    Tensor B = Tensor::zeros({400, 100});
-   matmul(A, B);
+   Tensor mult_w1 = matmul(A_view, B);
 
    // 4. Sumar una matriz 1 × 100.
    Tensor C = Tensor::zeros({1, 100});
-   Tensor D = A + C;
+   Tensor D = mult_w1 + C;
 
    // 5. Aplicar la funci´on ReLU.
    relu ReLU2;
@@ -60,22 +60,20 @@ int main() {
 
    // 6. Multiplicar por una matriz 100 × 10.
    Tensor F = Tensor::zeros({100, 10});
-   matmul(E, F);
+   Tensor mult_w2 = matmul(E, F);
 
    // 7. Sumar una matriz 1 × 10.
-   Tensor G = Tensor::zeros({1, 100});
-   Tensor H = E + G;
+   Tensor G = Tensor::zeros({1, 10});
+   Tensor H = mult_w2 + G;
 
    // 8. Aplicar la funci´on Sigmoid.
    sigmoid Sigmoid;
    Tensor I = H.apply(Sigmoid);
-   return 0;
 
-   
    // Para corroborar el tamaño final
    auto shape = I.getShape();
 
    cout << "Tamaño final: ";
-   cout << shape << endl;
+   cout << *shape <<","<<*(shape+1)<< endl;
    return 0;
 }
