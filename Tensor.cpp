@@ -213,10 +213,57 @@ Tensor operator*(const Tensor &a, double b) {
    return resultado;
 }
 
-Tensor Tensor::concat(vector<Tensor> tensores, int axis) {
-    if (a.coords != b.coords)
-        throw invalid_argument("Las dimensiones no son compatibles.");
+Tensor Tensor::concat(vector<Tensor> tensors, size_t axis) {
+    if (tensors.empty()) {
+        throw invalid_argument("Empty tensors");
+    }
+    const Tensor& first = tensors[0];
+    size_t dims = first.c_size;
 
+    if (axis >= dims) {
+        throw invalid_argument("Invalid axis");
+    }
+
+    vector<size_t> new_shape(first.coords, first.coords + dims);
+
+    for (size_t i = 1; i < tensors.size(); i++) {
+        const Tensor& tensor = tensors[i];
+        if (tensor.c_size != dims) {
+            throw invalid_argument("Invalid size");
+        }
+        for (size_t d = 0; d < dims; d++) {
+            if (d == axis) {
+                new_shape[d] += tensor.coords[d];
+            }
+            else if (tensor.coords[d] != new_shape[d]) {
+                throw invalid_argument("Invalid axis");
+            }
+        }
+    }
+    size_t outer_size = 1;
+    for (size_t d = 0; d < axis; d++) {
+        outer_size *= new_shape[d];
+    }
+
+    size_t inner_size = 1;
+    for (size_t d = axis + 1; d < dims; d++) {
+        inner_size *= new_shape[d];
+    }
+
+    vector<double> new_values;
+    new_values.reserve(accumulate(new_shape.begin(),new_shape.end(),1,multiplies<size_t>()));
+    vector<const double*> read_ptrs;
+    for (const Tensor& tensor : tensors) {
+        read_ptrs.push_back(tensor.tensor);
+    }
+    for (size_t o = 0; o < outer_size; o++) {
+        for (size_t i = 0; i < tensors.size(); i++) {
+            size_t chunk_size = tensors[i].coords[axis]*inner_size;
+            new_values.insert(new_values.end(), read_ptrs[i], read_ptrs[i] + chunk_size);
+            read_ptrs[i] += chunk_size;
+        }
+    }
+    return Tensor(new_shape,new_values);
 }
 
 Tensor dot ( const Tensor & a , const Tensor & b ) {
@@ -228,4 +275,49 @@ Tensor matmul ( const Tensor & a , const Tensor & b ) {
     if (a.coords != b.coords)
         throw invalid_argument("Las dimensiones no son compatibles.");
 
+}
+
+void Tensor::print() const {
+    if (c_size == 0 || size == 0) {
+        cout << "[]" << endl;
+    }
+
+    if (c_size == 1) {
+        cout << "[";
+        for (size_t i = 0; i < coords[0]; i++) {
+            cout << tensor[i] << (i < coords[0] - 1 ? ", " : "");
+        }
+        cout << "]" << endl;
+    }
+    else if (c_size == 2) {
+        cout << "[" << endl;
+        for (size_t i = 0; i < coords[0]; i++) {
+            cout << "  [";
+            for (size_t j = 0; j < coords[1]; j++) {
+                size_t index = i*coords[1] + j;
+                cout << tensor[index] << (j < coords[1] - 1 ? ", " : "");
+            }
+            cout << "]" << (i < coords[0] - 1 ? ",\n" : "\n");
+        }
+        cout << "]" << endl;
+    }
+    else if (c_size == 3) {
+        cout << "[" << endl;
+        for (size_t i = 0; i < coords[0]; i++) {
+            cout << "  [" << endl;
+            for (size_t j = 0; j < coords[1]; j++) {
+                cout << "    [" << endl;
+                for (size_t k = 0; k < coords[2]; k++) {
+                    size_t index = i * (coords[1] * coords[2]) + j * coords[2] + k;
+                    cout << tensor[index] << (k < coords[2] - 1 ? ", " : "");
+                }
+                cout << "]" << (j < coords[1] - 1 ? ",\n" : "\n");
+            }
+            cout << "  ]" << (i < coords[0] - 1 ? ",\n\n" : "\n");
+        }
+        cout << "]" << endl;
+    }
+    else {
+        throw invalid_argument("Invalid size");
+    }
 }

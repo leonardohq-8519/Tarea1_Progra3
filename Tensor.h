@@ -1,5 +1,6 @@
 #ifndef TAREA1_P3_TENSOR_H
 #define TAREA1_P3_TENSOR_H
+#include <iostream>
 #include <vector>
 #include "TensorTransform.h"
 using namespace std;
@@ -37,10 +38,12 @@ public:
     friend Tensor operator*(const Tensor &a, const Tensor &b);
     friend Tensor operator*(const Tensor &a, double b);
 
-    static Tensor concat(vector<Tensor> tensores, int axis);
+    static Tensor concat(vector<Tensor> tensors, size_t axis);
     Tensor view(const vector<size_t>& shape);
-    Tensor unsqueeze(const int num);
+    //Tensor unsqueeze(const int num);
     Tensor apply(const TensorTransform& transform) const;
+
+    void print() const;
 };
 
 
